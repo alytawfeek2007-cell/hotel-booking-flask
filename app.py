@@ -95,14 +95,17 @@ def book_room(room_number):
     connection.commit()
     connection.close()
 
-    msg = Message(
-        subject="Booking Confirmation",
-        sender=app.config['MAIL_USERNAME'],
-        recipients=[session['email']],
-        body=f"Hi {guest_name}, your booking for Room {room_number} is confirmed!"
-    )
-    mail.send(msg)
-
+    try:
+        msg = Message(
+            subject="Booking Confirmation",
+            sender=app.config['MAIL_USERNAME'],
+            recipients=[session['email']],
+            body=f"Hi {guest_name}, your booking for Room {room_number} is confirmed!"
+        )
+        mail.send(msg)
+    except Exception as e:
+        print("Email failed to send:", e)
+        
     flash("Booking confirmed!")
     return redirect(url_for('room_list'))
 
