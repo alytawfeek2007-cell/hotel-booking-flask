@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block title %}Available Rooms{% endblock %}
+{% block content %}
+    <h1>Available Rooms</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p><strong>{{ msg }}</strong></p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form action="/rooms" method="GET">
+        <select name="typeName">
+            <option value="">All types</option>
+            <option value="Single">Single</option>
+            <option value="Double">Double</option>
+            <option value="Suite">Suite</option>
+        </select>
+        <button type="submit">Filter</button>
+    </form>
+    <ul>
+        {% for room in rooms %}
+            <li>
+                {% if room.isAvailable %}
+                    <a href="/rooms/{{ room.roomNumber }}">
+                        Room {{ room.roomNumber }} - {{ room.typeName }} - ${{ room.pricePerNight }}/night
+                    </a>
+                {% else %}
+                    Room {{ room.roomNumber }} - {{ room.typeName }} - ${{ room.pricePerNight }}/night (Booked)
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

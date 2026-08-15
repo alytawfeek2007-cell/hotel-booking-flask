@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block title %}Bookings{% endblock %}
+{% block content %}
+
+    <h1>Bookings</h1>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p><strong>{{ msg }}</strong></p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <ul>
+        {% for booking in bookings %}
+            <li>
+                Room {{ booking.roomNumber }} - {{ booking.guestName }} - {{ booking.bookingDate }}
+                <form action="/cancel/{{ booking.id }}" method="POST" style="display:inline">
+                    <button type="submit">Cancel</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}

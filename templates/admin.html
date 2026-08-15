@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block title %}Admin{% endblock %}
+{% block content %}
+    <h1>Admin</h1>
+
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for msg in messages %}
+                <p><strong>{{ msg }}</strong></p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <p>Total bookings: {{ total }}</p>
+    {% if most_booked %}
+        <p>Most booked room: {{ most_booked.roomNumber }} ({{ most_booked.bookingCount }} bookings)</p>
+    {% else %}
+        <p>No bookings yet</p>
+    {% endif %}
+
+    <h2>Room Inventory</h2>
+    <ul>
+        {% for room in rooms %}
+            <li>
+                Room {{ room.roomNumber }} - {{ room.typeName }} - 
+                {% if room.isAvailable %}
+                    Available
+                    <form action="/admin/book/{{ room.roomNumber }}" method="POST" style="display:inline">
+                        <input type="email" name="guest_email" placeholder="guest email" required>
+                        <input type="text" name="guest_username" placeholder="username (if new guest)">
+                        <button type="submit">Book for guest</button>
+                    </form>
+                {% else %}
+                    Booked
+                    <form action="/admin/free/{{ room.roomNumber }}" method="POST" style="display:inline">
+                        <button type="submit">Free up</button>
+                    </form>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+
+    <h2>All Bookings</h2>
+    <ul>
+        {% for booking in bookings %}
+            <li>
+                Room {{ booking.roomNumber }} - {{ booking.guestName }} ({{ booking.email }}) - {{ booking.bookingDate }} - 
+                {% if booking.status == 'cancelled' %}
+                    <strong>Cancelled</strong>
+                {% else %}
+                    Confirmed
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
